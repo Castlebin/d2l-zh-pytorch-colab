@@ -87,7 +87,7 @@ print("\n独热编码后的inputs:", inputs)
 import torch
 X = torch.tensor(inputs.to_numpy(dtype=float))
 y = torch.tensor(outputs.to_numpy(dtype=float))
-X, y
+print(f'X = {X} \n y = {y} ', X, y)
 
 
 ### 2.2.4. 小结
