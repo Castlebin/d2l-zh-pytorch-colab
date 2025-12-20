@@ -142,3 +142,23 @@ y = torch.arange(4, dtype=torch.float32)
 x = torch.ones(4, dtype=torch.float32)
 print('x.dot(y): ', x.dot(y))  # tensor(6.)
 
+### 2.3.8 矩阵-向量积 (Matrix-Vector Product)
+# 矩阵-向量积是线性代数中的基本操作。给定一个矩阵 A 和一个向量 x，其矩阵-向量积 Ax 产生一个新的向量
+# A 是一个 M×N 矩阵，x 是一个长度为 N 的向量，则 Ax 是一个长度为 M 的向量
+# %% 矩阵-向量积 操作是 torch.mv()
+A = torch.arange(20, dtype=torch.float32).reshape(5, 4)  # 一个 5 行 4 列的矩阵
+x = torch.arange(4, dtype=torch.float32)  # 一个长度为 4 的向量
+
+b = torch.mv(A, x)  # 矩阵-向量积. 结果是一个长度为 5 的向量
+print(b)
+
+
+### 2.3.9 矩阵-矩阵积 (Matrix-Matrix Product)
+# 矩阵-矩阵积是线性代数中的基本操作。给定两个矩阵 A 和 B，其矩阵-矩阵积 AB 产生一个新的矩阵
+# A 是一个 M×N 矩阵，B 是一个 N×P 矩阵，则 AB 是一个 M×P 矩阵
+# %% 矩阵-矩阵积 操作是 torch.mm()
+A = torch.arange(20, dtype=torch.float32).reshape(5, 4)  # 一个 5 行 4 列的矩阵
+B = torch.arange(12, dtype=torch.float32).reshape(4, 3)  # 一个 4 行 3 列的矩阵
+C = torch.mm(A, B)  # 矩阵-矩阵积. 结果是一个 5 行 3 列的矩阵
+print(C)
+
