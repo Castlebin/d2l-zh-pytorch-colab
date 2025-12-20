@@ -122,6 +122,9 @@ print('a.sum(dim=1): ', a.sum(dim=1))  # 在第 1 维（列）上求和，所以
 # %% 沿着行和列对矩阵进行求和，等价于对矩阵的所有元素求和
 print('a.sum(dim=(0, 1)): ', a.sum(dim=(0, 1)))  # tensor(190.)
 
+# %% 平均值
+print('a.mean(): ', a.mean())  # tensor(9.5000)
+
 #### 2.3.6.1 非降维求和
 # %%
 sum_A = A.sum(axis=1, keepdims=True)
@@ -129,12 +132,11 @@ print("sum_A: ", sum_A)
 print('sum_A.shape: ', sum_A.shape)  # torch.Size([5, 1]) 仍是 2 维张量
 
 # %% 广播机制
-print('A / sum_A : ', A / sum_A)     # 可以看到进行了广播之后，再进行的按元素除法
+print('A / sum_A : ', A / sum_A)  # 可以看到进行了广播之后，再进行的按元素除法
 
 # %% 沿着某个数轴计算矩阵的累计和  （不会降低张量的维度）
 cum_A = A.cumsum(dim=0)
 print('cum_A: ', cum_A)
-
 
 ### 2.3.7 点积（Dot Product）
 # %% 点积是向量运算中的一种基本操作。给定两个长度相同的向量，其点积是对应元素乘积的和。结果是一个标量
@@ -152,8 +154,7 @@ x = torch.arange(4, dtype=torch.float32)  # 一个长度为 4 的向量
 b = torch.mv(A, x)  # 矩阵-向量积. 结果是一个长度为 5 的向量
 print(b)
 
-
-### 2.3.9 矩阵-矩阵积 (Matrix-Matrix Product)
+### 2.3.9 矩阵-矩阵积 (Matrix-Matrix Product) 【简称：矩阵乘法】
 # 矩阵-矩阵积是线性代数中的基本操作。给定两个矩阵 A 和 B，其矩阵-矩阵积 AB 产生一个新的矩阵
 # A 是一个 M×N 矩阵，B 是一个 N×P 矩阵，则 AB 是一个 M×P 矩阵
 # %% 矩阵-矩阵积 操作是 torch.mm()
@@ -161,4 +162,41 @@ A = torch.arange(20, dtype=torch.float32).reshape(5, 4)  # 一个 5 行 4 列的
 B = torch.arange(12, dtype=torch.float32).reshape(4, 3)  # 一个 4 行 3 列的矩阵
 C = torch.mm(A, B)  # 矩阵-矩阵积. 结果是一个 5 行 3 列的矩阵
 print(C)
+
+### 2.3.10 范数
+# 范数是将向量映射到非负实数的**函数**，用于衡量向量的大小或长度。常见的范数包括 L1 范数和 L2 范数
+# 范数满足以下性质：
+# 非负性：对于任意向量 x，范数 ||x|| ≥ 0，且当且仅当 x = 0 时，||x|| = 0
+# 齐次性：对于任意标量 α 和向量 x，范数满足 ||αx|| = |α| * ||x||
+# 三角不等式：对于任意向量 x 和 y，范数满足 ||x + y|| ≤ ||x|| + ||y||
+
+# %% L2 范数（欧几里得范数）是向量元素平方和的平方根。使用 torch.norm() 计算 L2 范数
+x = torch.arange(4, dtype=torch.float32)
+print('torch.norm(x): ', torch.norm(x))  # tensor(5.4772)
+
+# %% L1 范数是向量元素绝对值之和。使用 torch.norm() 计算 L1 范数，指定 p=1
+print('torch.norm(x, p=1): ', torch.norm(x, p=1))  # tensor(6.)
+
+# %% 由上面的方法调用参数可以看出，L1、L2 范数其实是 torch.norm() 函数的特例
+# 对于 p 范数，p 可以是任意正实数，即广义的 Lp 范数
+# Lp 范数的定义是 向量元素的 p 次方和的 1/p 次方
+print('torch.norm(x, p=4): ', torch.norm(x, p=4))  # L4 范数
+
+# %% 类似于向量的范数，矩阵也有对应的范数定义
+A = torch.arange(20, dtype=torch.float32).reshape(5, 4)
+# Frobenius 范数是矩阵元素平方和的平方根，对应于向量的 L2 范数
+print('torch.norm(A): ', torch.norm(A))  # Frobenius 范数
+
+### 2.3.10.1 范数和目标
+'''
+在深度学习中，我们经常试图解决优化问题： 
+ 1. 最大化分配给观测数据的概率;
+ 2. 最小化预测和真实观测之间的距离。 
+ 3. 用向量表示物品（如单词、产品或新闻文章），
+以便最小化相似项目之间的距离，最大化不同项目之间的距离。 
+
+目标，或许是深度学习算法最重要的组成部分（除了数据），通常被表达为范数。
+'''
+
+
 
