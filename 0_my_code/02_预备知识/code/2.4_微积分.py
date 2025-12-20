@@ -33,11 +33,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 设置中文字体以支持中文显示
-plt.rcParams['font.family'] = 'SimHei'  # 替换为你选择的字体
+# -------------------------- 设置中文字体 start --------------------------
+# 可以替换为你系统中已有的中文字体
+plt.rcParams['font.sans-serif'] = [
+    # Windows 优先
+    'SimHei', 'Microsoft YaHei',
+    # macOS 优先
+    'PingFang SC', 'Heiti TC',
+    # Linux 优先
+    'WenQuanYi Micro Hei', 'DejaVu Sans'
+]
+# 修复负号显示为方块的问题
+plt.rcParams['axes.unicode_minus'] = False
+# -------------------------- 设置中文字体 end --------------------------
 
 x = np.arange(0, 3, 0.1)
 plt.figure(figsize=(6, 4))
-plt.plot(x, f(x), label='f(x) = 3x² - 4x')
+# plt.plot(x, f(x), label='f(x) = 3x² - 4x')
+# 使用 latex 语法显示数学公式，不然指数会显示为 □
+plt.plot(x, f(x), label='$f(x) = 3x^2 - 4x$')
 plt.plot(x, 2 * x - 3, linestyle='--', label='切线 y=2x-3 (x=1)')
 plt.xlabel('x')
 plt.ylabel('f(x)')
@@ -45,3 +59,5 @@ plt.legend()
 plt.grid(True)
 plt.title('函数及其在 x=1 处的切线')
 plt.show()
+
+
