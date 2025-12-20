@@ -20,7 +20,7 @@ with open(data_file, 'w', encoding='utf-8') as f:
 
 print("CSV 文件已创建", )
 
-# 使用 pandas 读取 CSV 文件
+# %% 使用 pandas 读取 CSV 文件
 import pandas as pd
 
 data = pd.read_csv(data_file)
@@ -34,7 +34,7 @@ print(data)
 通过位置索引iloc，我们将data分成inputs和outputs， 其中前者为data的前两列，而后者为data的最后一列。 
 对于inputs中缺少的数值，我们用同一列的均值替换“NaN”项。
 '''
-#
+#%%
 inputs, outputs = data.iloc[:, 0:2], data.iloc[:, 2:]
 
 print('\ninputs:', inputs)
@@ -85,10 +85,10 @@ print("\n独热编码后的inputs:", inputs)
 # 最后，我们将数据转换为张量格式，以便在深度学习模型中使用。
 # %%
 import torch
+
 X = torch.tensor(inputs.to_numpy(dtype=float))
 y = torch.tensor(outputs.to_numpy(dtype=float))
 print(f'X = {X} \n y = {y} ', X, y)
-
 
 ### 2.2.4. 小结
 '''
@@ -96,7 +96,6 @@ pandas软件包是Python中常用的数据分析工具中，pandas可以与张�
 
 用pandas处理缺失的数据时，我们可根据情况选择用插值法和删除法。
 '''
-
 
 ### 2.2.5. 练习
 '''
@@ -106,5 +105,3 @@ pandas软件包是Python中常用的数据分析工具中，pandas可以与张�
 
 将预处理后的数据集转换为张量格式。
 '''
-
-
