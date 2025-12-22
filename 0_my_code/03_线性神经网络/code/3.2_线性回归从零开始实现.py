@@ -126,24 +126,63 @@ batch_size = 10  # 批量大小
 net = linreg  # 线性回归模型
 loss = squared_loss  # 均方损失函数
 
+# 记录损失用于绘图
+losses = []
+
 # 开始执行训练过程
 # 迭代 num_epochs 次。每个 epoch 都会遍历数据集一次
 for epoch in range(num_epochs):
+    epoch_loss = 0
+    num_batches = 0
+
     # 每次取出一个小批量数据进行训练
     for X, y in data_iter(batch_size, features, labels):
-        # 计算预测值
+        # 计算预测值 (前向传播)
         y_hat = net(X, w, b)
-        # 计算损失函数值
+
+        # 计算损失
         l = loss(y_hat, y)
+
         # 反向传播计算梯度
         l.sum().backward()
+
         # 使用小批量随机梯度下降更新参数
         sgd([w, b], lr, batch_size)
 
-    # 每次遍历数据集后计算并打印损失函数的平均值
-    with torch.no_grad():
-        train_l = loss(net(features, w, b), labels)
-        print(f'epoch {epoch + 1}, loss {float(train_l.mean()):f}')
+        epoch_loss += l.sum().item()
+        num_batches += 1
+
+    # 计算并记录当前 epoch 的平均损失
+    avg_loss = epoch_loss / num_batches
+    print(f'epoch {epoch + 1}, loss {avg_loss:.6f}')
+
+    losses.append(avg_loss) # 记录损失用于绘图
+
+#%% 设置中文字体以支持中文显示
+# -------------------------- 设置中文字体 start --------------------------
+# 可以替换为你系统中已有的中文字体
+plt.rcParams['font.sans-serif'] = [
+    # Windows 优先
+    'SimHei', 'Microsoft YaHei',
+    # macOS 优先
+    'PingFang SC', 'Heiti TC',
+    # Linux 优先
+    'WenQuanYi Micro Hei', 'DejaVu Sans'
+]
+# 修复负号显示为方块的问题
+plt.rcParams['axes.unicode_minus'] = False
+# -------------------------- 设置中文字体 end --------------------------
+
+
+#%% 可视化训练过程中的损失变化
+plt.figure(figsize=(6, 4))
+plt.plot(range(1, num_epochs + 1), losses, marker='o')
+plt.xlabel('Epoch')
+plt.ylabel('平均损失')
+plt.title('训练损失曲线')
+plt.grid(True, alpha=0.3)
+plt.show()
+
 
 # %%
 # 查看一下训练好的模型参数与真实参数的差距
