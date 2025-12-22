@@ -11,7 +11,7 @@ x
 
 # %% 梯度
 x.requires_grad_(True)  # 等价于x=torch.arange(4.0,requires_grad=True)
-x.grad  # 默认值是None
+x.grad  # 默认值是None，因为还没有计算
 
 # %% 定义一个新的张量y，它是x的函数
 y = 2 * torch.dot(x, x)
@@ -39,16 +39,18 @@ x.grad              # tensor([1., 1., 1., 1.])
 # 本例只想求偏导数的和，所以传递一个1的梯度是合适的
 x.grad.zero_()
 y = x * x
+
 # 等价于y.backward(torch.ones(len(x)))
-y.sum().backward()
+y.sum().backward() # 对向量求和后再反向传播 （当输出不是标量时,需要先求和再反向传播）
 x.grad             # tensor([0., 2., 4., 6.])
 
 
 ### 2.5.3. 分离计算
+"""有时我们希望将某些计算移出计算图,使其被视为常数。"""
 # %%
 x.grad.zero_()
 y = x * x
-u = y.detach()  # u 与 y 具有相同的值，但不与计算图连接
+u = y.detach()  # 分离计算。u 与 y 具有相同的值，但不与计算图连接，因此后续 u 就不会被 跟踪梯度计算了，可以视作常数了，不会被后续的反向传播所影响
 z = u * x
 
 z.sum().backward()
@@ -56,7 +58,7 @@ x.grad == u             # tensor([True, True, True, True])
 
 #%% 由于记录了y的计算结果，我们可以随后在 y 上调用反向传播， 正常得到 y = x*x 关于的 x 的导数，即 2*x
 x.grad.zero_()
-y.sum().backward()
+y.sum().backward()      # 当输出不是标量时,需要先求和再反向传播
 x.grad == 2 * x         # tensor([True, True, True, True])
 
 
