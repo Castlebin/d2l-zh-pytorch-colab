@@ -5,6 +5,8 @@ import torch
 import matplotlib.pyplot as plt
 import numpy as np
 
+from matplotlib_cn import matplotlib_chinese
+matplotlib_chinese.enable_matplotlib_chinese()
 
 ### 3.2.1. 生成数据集
 # %%
@@ -158,21 +160,6 @@ for epoch in range(num_epochs):
 
     losses.append(avg_loss) # 记录损失用于绘图
 
-#%% 设置中文字体以支持中文显示
-# -------------------------- 设置中文字体 start --------------------------
-# 可以替换为你系统中已有的中文字体
-plt.rcParams['font.sans-serif'] = [
-    # Windows 优先
-    'SimHei', 'Microsoft YaHei',
-    # macOS 优先
-    'PingFang SC', 'Heiti TC',
-    # Linux 优先
-    'WenQuanYi Micro Hei', 'DejaVu Sans'
-]
-# 修复负号显示为方块的问题
-plt.rcParams['axes.unicode_minus'] = False
-# -------------------------- 设置中文字体 end --------------------------
-
 
 #%% 可视化训练过程中的损失变化
 plt.figure(figsize=(6, 4))
@@ -192,6 +179,4 @@ print(f'真实的 b: {true_b}, 估计的 b: {b}')
 # 计算并打印估计误差。可以看到误差非常小，说明我们成功地学到了真实的线性模型参数
 print(f'w 的估计误差: {true_w - w.reshape(true_w.shape)}')
 print(f'b 的估计误差: {true_b - b}')
-
-
 
