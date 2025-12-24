@@ -210,3 +210,6 @@ __marimo__/
 FashionMNIST
 
 
+model.pth
+*.pth
+
