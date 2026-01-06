@@ -322,7 +322,7 @@ class RNNModel(nn.Module):
 
 ### 未来方向
 
-- **Transformer** (第9章): 自注意力机制
+- **Transformer** (第 10 章): 自注意力机制
 - **BERT/GPT**: 预训练语言模型
 - **高效RNN**: SRU, QRNN
 
