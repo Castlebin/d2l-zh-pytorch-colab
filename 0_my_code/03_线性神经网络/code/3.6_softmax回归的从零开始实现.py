@@ -180,9 +180,8 @@ train_losses, train_accs, test_accs = train(
 
 # %%
 # 可视化训练过程
-
-from dl_d2l.util import enable_matplotlib_chinese
-enable_matplotlib_chinese()
+from matplotlib_cn import matplotlib_util
+matplotlib_util.enable_chinese()
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
 
