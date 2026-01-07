@@ -34,9 +34,8 @@ print(f'图像形状: {mnist_train[0][0].shape}')
 
 
 # %% 可视化数据
-from matplotlib_cn import matplotlib_chinese
-
-matplotlib_chinese.enable_matplotlib_chinese()
+from matplotlib_cn import matplotlib_util
+matplotlib_util.enable_chinese()
 
 def get_fashion_mnist_labels(labels):
     """返回Fashion-MNIST数据集的文本标签"""
