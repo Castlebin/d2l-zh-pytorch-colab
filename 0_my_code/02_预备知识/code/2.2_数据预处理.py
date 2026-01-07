@@ -6,8 +6,9 @@
 import os
 
 # 创建数据目录
-os.makedirs(os.path.join('..', 'data'), exist_ok=True)
-data_file = os.path.join('..', 'data', 'house_tiny.csv')
+#os.makedirs(os.path.join('..', 'data'), exist_ok=True)
+#data_file = os.path.join('..', 'data', 'house_tiny.csv')
+data_file = os.path.join('.', 'house_tiny.csv')
 
 # 写入 CSV 文件
 with open(data_file, 'w', encoding='utf-8') as f:

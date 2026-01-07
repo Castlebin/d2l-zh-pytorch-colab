@@ -1,3 +1,4 @@
+import dl_d2l.util.device_util
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
@@ -8,6 +9,16 @@ import matplotlib.pyplot as plt
 from matplotlib_cn import matplotlib_util
 matplotlib_util.enable_chinese()
 
+import os
+from dl_d2l.util import colab_util
+
+base_data_dir = colab_util.get_base_data_dir()
+print(f'base data dir: {base_data_dir}')
+
+datasets_dir = os.path.join(base_data_dir, 'ML', 'Datasets')
+os.makedirs(datasets_dir, exist_ok=True)
+print(f'datasets dir: {datasets_dir}')
+
 # pytorch 快速入门教程
 # https://docs.pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html
 
@@ -15,7 +26,7 @@ matplotlib_util.enable_chinese()
 # 1. 加载数据集
 # 训练数据集
 training_data = datasets.FashionMNIST(
-    root="data",
+    root=datasets_dir,
     train=True,
     download=True,
     transform=ToTensor(),
@@ -23,7 +34,7 @@ training_data = datasets.FashionMNIST(
 
 # 测试数据集
 test_data = datasets.FashionMNIST(
-    root="data",
+    root=datasets_dir,
     train=False,
     download=True,
     transform=ToTensor(),
@@ -77,7 +88,9 @@ for X, y in test_dataloader:
 
 # %%
 # 3. 定义模型
-device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
+# device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
+device = dl_d2l.util.device_util.get_available_device()
+
 print(f"Using {device} device")
 
 # Define model
@@ -203,7 +216,8 @@ print("Saved PyTorch Model State to model.pth")
 # %%
 # 8. 加载训练好的模型
 model = NeuralNetwork().to(device)
-model.load_state_dict(torch.load("model.pth", weights_only=True))
+#model.load_state_dict(torch.load("model.pth", weights_only=True))
+model.load_state_dict(torch.load("model.pth"))
 
 
 # %%

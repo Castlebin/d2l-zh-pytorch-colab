@@ -213,3 +213,9 @@ FashionMNIST
 model.pth
 *.pth
 
+house_tiny.csv
+
+
+dxdiag.txt
+
+
