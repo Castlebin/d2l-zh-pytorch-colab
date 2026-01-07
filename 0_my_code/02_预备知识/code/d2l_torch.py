@@ -3007,7 +3007,7 @@ def get_dataloader_workers():
     Defined in :numref:`sec_utils`"""
     return 4
 
-def load_data_fashion_mnist(batch_size, resize=None):
+def load_data_fashion_mnist(batch_size, resize=None, root_dir="../data"):
     """Download the Fashion-MNIST dataset and then load it into memory.
 
     Defined in :numref:`sec_utils`"""
@@ -3016,9 +3016,9 @@ def load_data_fashion_mnist(batch_size, resize=None):
         trans.insert(0, transforms.Resize(resize))
     trans = transforms.Compose(trans)
     mnist_train = torchvision.datasets.FashionMNIST(
-        root="../data", train=True, transform=trans, download=True)
+        root=root_dir, train=True, transform=trans, download=True)
     mnist_test = torchvision.datasets.FashionMNIST(
-        root="../data", train=False, transform=trans, download=True)
+        root=root_dir, train=False, transform=trans, download=True)
     return (torch.utils.data.DataLoader(mnist_train, batch_size, shuffle=True,
                                         num_workers=get_dataloader_workers()),
             torch.utils.data.DataLoader(mnist_test, batch_size, shuffle=False,

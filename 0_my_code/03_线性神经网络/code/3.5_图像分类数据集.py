@@ -19,14 +19,25 @@ from torchvision import transforms
 import matplotlib.pyplot as plt
 
 
+import os
+from dl_d2l.util import colab_util
+
+base_data_dir = colab_util.get_base_data_dir()
+print(f'base data dir: {base_data_dir}')
+
+datasets_dir = os.path.join(base_data_dir, 'ML', 'Datasets')
+os.makedirs(datasets_dir, exist_ok=True)
+print(f'datasets dir: {datasets_dir}')
+
+
 # ToTensor将图像转换为张量,并归一化到[0,1]
 trans = transforms.ToTensor()
 
 # 下载训练集和测试集
 mnist_train = torchvision.datasets.FashionMNIST(
-    root="../data", train=True, transform=trans, download=True)
+    root=datasets_dir, train=True, transform=trans, download=True)
 mnist_test = torchvision.datasets.FashionMNIST(
-    root="../data", train=False, transform=trans, download=True)
+    root=datasets_dir, train=False, transform=trans, download=True)
 
 print(f'训练集大小: {len(mnist_train)}')
 print(f'测试集大小: {len(mnist_test)}')
