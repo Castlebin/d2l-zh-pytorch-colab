@@ -1,3 +1,4 @@
+import time
 import dl_d2l.util.device_util
 import torch
 from torch import nn
@@ -90,7 +91,7 @@ for X, y in test_dataloader:
 # 3. 定义模型
 # device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 device = dl_d2l.util.device_util.get_available_device()
-
+# device = torch.device("cpu")
 print(f"Using {device} device")
 
 # Define model
@@ -195,6 +196,7 @@ def test(dataloader, model, loss_fn):
 
 # %%
 # 6. 运行训练和测试循环
+start = time.time()
 
 # 训练周期
 epochs = 10
@@ -203,7 +205,7 @@ for t in range(epochs):
     train(train_dataloader, model, loss_fn, optimizer)
     test(test_dataloader, model, loss_fn)
 print("Done!")
-
+print("Training cost: ", time.time() - start)
 
 
 # %%
@@ -245,7 +247,4 @@ with torch.no_grad():
     pred = model(x)
     predicted, actual = classes[pred[0].argmax(0)], classes[y]
     print(f'Predicted: "{predicted}", Actual: "{actual}"')
-
-
-
 
