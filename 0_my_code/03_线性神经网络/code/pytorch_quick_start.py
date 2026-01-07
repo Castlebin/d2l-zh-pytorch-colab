@@ -4,10 +4,9 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
-from matplotlib_cn import matplotlib_chinese
 
-# matplotlib 启用中文显示
-matplotlib_chinese.enable_matplotlib_chinese()
+from matplotlib_cn import matplotlib_util
+matplotlib_util.enable_chinese()
 
 # pytorch 快速入门教程
 # https://docs.pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html
