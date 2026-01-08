@@ -70,37 +70,117 @@
 
 ### MLP vs 线性模型
 
-| 特性 | 线性模型 | 多层感知机 |\n|------|----------|------------|\n| 隐藏层 | 无 | 有 |\n| 激活函数 | 无 | ReLU等 |\n| 参数量 | 少 | 多 |\n| 表达能力 | 弱(线性) | 强(非线性) |\n| 过拟合风险 | 低 | 高 |\n| Fashion-MNIST准确率 | ~83% | ~88% |\n\n### 激活函数对比\n\n| 激活函数 | 公式 | 优点 | 缺点 | 适用场景 |\n|---------|------|------|------|----------|\n| ReLU | max(0,x) | 简单,缓解梯度消失 | 死亡ReLU | 现代网络首选 |\n| Sigmoid | 1/(1+e⁻ˣ) | 输出(0,1) | 梯度消失严重 | 输出层(二分类) |\n| Tanh | (eˣ-e⁻ˣ)/(eˣ+e⁻ˣ) | 零中心化 | 梯度消失 | RNN中使用 |\n\n### 正则化技术对比\n\n| 方法 | 原理 | 优点 | 缺点 | 实现 |\n|------|------|------|------|------|\n| 权重衰减 | 惩罚大权重 | 简单有效 | 需要调λ | `weight_decay=λ` |\n| Dropout | 随机丢弃神经元 | 效果显著 | 训练慢2倍 | `nn.Dropout(p)` |\n| 数据增强 | 扩充训练数据 | 提升泛化 | 特定领域 | torchvision.transforms |\n| Early Stopping | 早停 | 防止过训练 | 需要验证集 | 手动实现 |\n\n### 训练流程
+| 特性               | 线性模型  | 多层感知机  |
+|------------------|-------|--------|
+| 隐藏层              | 无     | 有      |
+| 激活函数             | 无     | ReLU等  |
+| 参数量              | 少     | 多      |
+| 表达能力             | 弱(线性) | 强(非线性) |
+| 过拟合风险            | 低     | 高      |
+| Fashion-MNIST准确率 | ~83%  | ~88%   |
 
-```python\n# 1. 构建模型\nnet = nn.Sequential(\n    nn.Flatten(),\n    nn.Linear(784, 256),\n    nn.ReLU(),\n    nn.Dropout(0.5),      # Dropout正则化\n    nn.Linear(256, 10)\n)\n\n# 2. 定义损失和优化器\nloss = nn.CrossEntropyLoss()\noptimizer = torch.optim.SGD(\n    net.parameters(), \n    lr=0.1, \n    weight_decay=0.01    # L2正则化\n)\n\n# 3. 训练循环\nfor epoch in range(num_epochs):\n    for X, y in train_iter:\n        optimizer.zero_grad()\n        l = loss(net(X), y)\n        l.backward()         # 反向传播\n        optimizer.step()     # 更新参数\n```
+### 激活函数对比
+
+| 激活函数    | 公式                | 优点        | 缺点     | 适用场景     |
+|---------|-------------------|-----------|--------|----------|
+| ReLU    | max(0,x)          | 简单,缓解梯度消失 | 死亡ReLU | 现代网络首选   |
+| Sigmoid | 1/(1+e⁻ˣ)         | 输出(0,1)   | 梯度消失严重 | 输出层(二分类) |
+| Tanh    | (eˣ-e⁻ˣ)/(eˣ+e⁻ˣ) | 零中心化      | 梯度消失   | RNN中使用   |
+
+### 正则化技术对比
+
+| 方法             | 原理      | 优点    | 缺点    | 实现                     |
+|----------------|---------|-------|-------|------------------------|
+| 权重衰减           | 惩罚大权重   | 简单有效  | 需要调λ  | `weight_decay=λ`       |
+| Dropout        | 随机丢弃神经元 | 效果显著  | 训练慢2倍 | `nn.Dropout(p)`        |
+| 数据增强           | 扩充训练数据  | 提升泛化  | 特定领域  | torchvision.transforms |
+| Early Stopping | 早停      | 防止过训练 | 需要验证集 | 手动实现                   |
+
+### 训练流程
+
+```python
+# 1. 构建模型
+net = nn.Sequential(
+    nn.Flatten(),
+    nn.Linear(784, 256),
+    nn.ReLU(),
+    nn.Dropout(0.5),      # Dropout正则化
+    nn.Linear(256, 10)
+)
+
+# 2. 定义损失和优化器
+loss = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(
+    net.parameters(), 
+    lr=0.1, 
+    weight_decay=0.01    # L2正则化
+)
+
+# 3. 训练循环
+for epoch in range(num_epochs):
+    for X, y in train_iter:
+        optimizer.zero_grad()
+        l = loss(net(X), y)
+        l.backward()         # 反向传播
+        optimizer.step()     # 更新参数
+```
 
 ## 💡 常见问题
 
-**Q1: 隐藏层应该有多少个神经元?**\n> 经验法则: 从256或512开始,根据任务复杂度调整。太少可能欠拟合,太多容易过拟合。
+**Q1: 隐藏层应该有多少个神经元?**
+> 经验法则: 从256或512开始,根据任务复杂度调整。太少可能欠拟合,太多容易过拟合。
 
-**Q2: 何时使用Dropout?**\n> 当观察到训练准确率远高于测试准确率时(过拟合的标志),应该加入Dropout。通常p=0.5是个好的起点。
+**Q2: 何时使用Dropout?**
+> 当观察到训练准确率远高于测试准确率时(过拟合的标志),应该加入Dropout。通常p=0.5是个好的起点。
 
-**Q3: 权重衰减系数λ如何选择?**\n> 常用值: 0.001, 0.01, 0.1。从小开始尝试,观察测试误差。λ太大会导致欠拟合。
+**Q3: 权重衰减系数λ如何选择?**
+> 常用值: 0.001, 0.01, 0.1。从小开始尝试,观察测试误差。λ太大会导致欠拟合。
 
-**Q4: ReLU vs Sigmoid选哪个?**\n> 几乎总是选ReLU! Sigmoid容易梯度消失,只在输出层(二分类)时使用。
+**Q4: ReLU vs Sigmoid选哪个?**
+> 几乎总是选ReLU! Sigmoid容易梯度消失,只在输出层(二分类)时使用。
 
-**Q5: 如何判断是否过拟合?**\n> 看训练误差和测试误差的差距:\n> - 差距小: 拟合良好\n> - 差距大: 过拟合,需要正则化\n> - 都很高: 欠拟合,需要更复杂的模型
+**Q5: 如何判断是否过拟合?**
+> 看训练误差和测试误差的差距:
+> - 差距小: 拟合良好
+> - 差距大: 过拟合,需要正则化
+> - 都很高: 欠拟合,需要更复杂的模型
 
-**Q6: 为什么需要参数初始化?**\n> 全零初始化会导致对称性问题(所有神经元学到相同的特征)。随机初始化打破对称性,但要注意方差,防止梯度消失/爆炸。
+**Q6: 为什么需要参数初始化?**
+> 全零初始化会导致对称性问题(所有神经元学到相同的特征)。随机初始化打破对称性,但要注意方差,防止梯度消失/爆炸。
 
 ## 🔬 实验建议
 
 ### 实验1: 观察过拟合
 ```python
-# 小数据集 + 大模型 = 过拟合\n# 使用前1000个样本训练\ntrain_iter_small = DataLoader(mnist_train[:1000], batch_size)\n# 使用5层网络\nnet_large = nn.Sequential(\n    nn.Flatten(),\n    nn.Linear(784, 512), nn.ReLU(),\n    nn.Linear(512, 512), nn.ReLU(),\n    nn.Linear(512, 512), nn.ReLU(),\n    nn.Linear(512, 10)\n)\n# 观察训练/测试误差的差距\n```
+# 小数据集 + 大模型 = 过拟合
+# 使用前1000个样本训练
+train_iter_small = DataLoader(mnist_train[:1000], batch_size)
+# 使用5层网络
+net_large = nn.Sequential(
+    nn.Flatten(),
+    nn.Linear(784, 512), nn.ReLU(),
+    nn.Linear(512, 512), nn.ReLU(),
+    nn.Linear(512, 512), nn.ReLU(),
+    nn.Linear(512, 10)
+)
+# 观察训练/测试误差的差距
+```
 
 ### 实验2: Dropout效果
 ```python
-# 对比有无Dropout的测试准确率\nnet_no_dropout = nn.Sequential(..., nn.Linear(256, 256), nn.ReLU(), ...)\nnet_with_dropout = nn.Sequential(..., nn.Dropout(0.5), nn.Linear(256, 256), nn.ReLU(), ...)\n```
+# 对比有无Dropout的测试准确率
+net_no_dropout = nn.Sequential(..., nn.Linear(256, 256), nn.ReLU(), ...)
+net_with_dropout = nn.Sequential(..., nn.Dropout(0.5), nn.Linear(256, 256), nn.ReLU(), ...)
+```
 
 ### 实验3: 学习率调度
 ```python
-# 学习率衰减\nscheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)\nfor epoch in range(num_epochs):\n    train(...)\n    scheduler.step()  # 每5个epoch学习率减半\n```
+# 学习率衰减
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)
+for epoch in range(num_epochs):
+    train(...)
+    scheduler.step()  # 每 5 个 epoch 学习率减半
+```
 
 ## 🚀 扩展阅读
 
@@ -113,10 +193,24 @@
 
 ### Fashion-MNIST分类
 
-| 模型 | 测试准确率 | 训练时间(10 epochs) |\n|------|-----------|---------------------|\n| Softmax回归 | ~83% | ~1分钟 |\n| MLP(1层,256) | ~88% | ~2分钟 |\n| MLP(1层,256) + Dropout | ~87% | ~3分钟 |\n| MLP(2层,256) | ~88.5% | ~3分钟 |\n| MLP(2层,256) + Dropout | ~87.5% | ~4分钟 |\n\n*注: Dropout短期可能降低准确率,但显著提升泛化能力*
+| 模型                    | 测试准确率  | 训练时间(10 epochs) |
+|-----------------------|--------|-----------------|
+| Softmax回归             | ~83%   | ~1分钟            |
+| MLP(1层,256)           | ~88%   | ~2分钟            |
+| MLP(1层,256) + Dropout | ~87%   | ~3分钟            |
+| MLP(2层,256)           | ~88.5% | ~3分钟            |
+| MLP(2层,256) + Dropout | ~87.5% | ~4分钟            |
+
+*注: Dropout短期可能降低准确率,但显著提升泛化能力*
 
 ## 🎓 下一步
 
 完成本章后,你已经掌握了深度学习的核心基础! 
 
-**下一章预告**: 深度学习计算 - 学习如何:\n- 构建更复杂的模型架构\n- 管理和保存模型参数\n- 自定义层和模块\n- 使用GPU加速训练\n\n继续加油! 🚀
+**下一章预告**: 深度学习计算 - 学习如何:
+- 构建更复杂的模型架构
+- 管理和保存模型参数
+- 自定义层和模块
+- 使用GPU加速训练
+
+继续加油! 🚀
