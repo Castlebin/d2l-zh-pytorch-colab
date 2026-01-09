@@ -1,5 +1,5 @@
 # @title 4.2 多层感知机从零开始实现
-
+# %% 导入必要的库
 import os
 import time
 
@@ -32,8 +32,10 @@ mnist_train = torchvision.datasets.FashionMNIST(
 mnist_test = torchvision.datasets.FashionMNIST(
     root=datasets_dir, train=False, transform=trans, download=True)
 
-train_iter = data.DataLoader(mnist_train, batch_size, shuffle=True, num_workers=4)
-test_iter = data.DataLoader(mnist_test, batch_size, shuffle=False, num_workers=4)
+# num_workers=0 表示不使用多线程，windows 上 DataLoader 不支持多线程加载，会出错
+# num_workers=0 表示直接在主线程上加载数据。默认值就是 0
+train_iter = data.DataLoader(mnist_train, batch_size, shuffle=True, num_workers=0) 
+test_iter = data.DataLoader(mnist_test, batch_size, shuffle=False, num_workers=0)  
 
 print(f'训练集大小: {len(mnist_train)}')
 print(f'测试集大小: {len(mnist_test)}')
