@@ -83,9 +83,11 @@ def train_scratch(lambd):
 
 # %% 4. 不使用 L2 惩罚项直接训练 - 无权重衰减   ( λ = 0 )
 w_no_wd, b_no_wd, train_l_no_wd, test_l_no_wd = train_scratch(lambd=0)
+d2l.plt.show()
 
 # %% 5. 使用 L2 惩罚项训练 - 使用权重衰减
 w_wd, b_wd, train_l_wd, test_l_wd = train_scratch(lambd=3)
+d2l.plt.show()
 
 # %% 可视化对比
 from matplotlib_cn import matplotlib_util
@@ -173,9 +175,11 @@ def train_concise(wd):
 
 # %% 1. 不使用 L2 惩罚项直接训练 - 无权重衰减   ( λ = 0 )
 w_no_wd_2, b_no_wd_2, train_l_no_wd_2, test_l_no_wd_2 = train_concise(0)
+d2l.plt.show()
 
 # %% 2. 使用 L2 惩罚项训练 - 使用权重衰减
 w_wd_2, b_wd_2, train_l_wd_2, test_l_wd_2 = train_concise(3)
+d2l.plt.show()
 
-# 绘图可以看到效果是一样的，省去
+# 绘图对比可以看到效果是一样的，省去
 
