@@ -31,8 +31,11 @@ def try_gpu(i=0):
             pass
 
     # Apple M 芯片
-    if torch.backends.mps.is_available() and i == 0:
-        return torch.device("mps")
+    try:
+        if torch.backends.mps.is_available() and i == 0:
+            return torch.device("mps")
+    except Exception:
+        pass
 
     return torch.device('cpu')
 
@@ -51,8 +54,11 @@ def try_all_gpus():
         except ImportError:
             pass
 
-    if torch.backends.mps.is_available():
-        devices.append(torch.device('mps'))
+    try:
+        if torch.backends.mps.is_available():
+            devices.append(torch.device('mps'))
+    except Exception:
+        pass
 
     return devices if devices else [torch.device('cpu')]
 
@@ -81,8 +87,6 @@ x_cpu_2_gpu = x_cpu.to(try_gpu(0))
 
 x_cpu_2_gpu * x_cpu_2_gpu
 
-
-
 # %% @title 5.6.3 神经网络与 GPU
 # 将神经网络放在 GPU 上
 net = nn.Sequential(nn.Linear(3, 1))
@@ -95,4 +99,3 @@ y
 
 # %% 可以看到模型的参数也是在同样的设备上
 net[0].weight.data.device
-
