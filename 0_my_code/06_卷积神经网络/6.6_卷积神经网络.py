@@ -131,5 +131,5 @@ def train_ch6(net, train_iter, test_iter, num_epochs, lr, device):
 lr, num_epochs = 0.9, 10
 train_ch6(net, train_iter, test_iter, num_epochs, lr, device)
 
-# %% 训练过程可视化
+# 训练过程可视化
 plt.show()
