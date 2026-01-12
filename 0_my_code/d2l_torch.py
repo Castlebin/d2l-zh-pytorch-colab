@@ -206,7 +206,7 @@ def get_dataloader_workers():
     # return 4
     return 0 if sys.platform.startswith('win') else 4
 
-def load_data_fashion_mnist(batch_size, resize=None, root_dir="../data"):
+def load_data_fashion_mnist(batch_size, resize=None, root_dir="../data", dataloader_workers=0):
     """Download the Fashion-MNIST dataset and then load it into memory.
 
     Defined in :numref:`sec_fashion_mnist`"""
@@ -219,9 +219,9 @@ def load_data_fashion_mnist(batch_size, resize=None, root_dir="../data"):
     mnist_test = torchvision.datasets.FashionMNIST(
         root=root_dir, train=False, transform=trans, download=True)
     return (data.DataLoader(mnist_train, batch_size, shuffle=True,
-                            num_workers=get_dataloader_workers()),
+                            num_workers=dataloader_workers),
             data.DataLoader(mnist_test, batch_size, shuffle=False,
-                            num_workers=get_dataloader_workers()))
+                            num_workers=dataloader_workers))
 
 def accuracy(y_hat, y):
     """Compute the number of correct predictions.
@@ -1980,13 +1980,13 @@ class VOCSegDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.features)
 
-def load_data_voc(batch_size, crop_size):
+def load_data_voc(batch_size, crop_size, dataloader_workers=0):
     """Load the VOC semantic segmentation dataset.
 
     Defined in :numref:`sec_semantic_segmentation`"""
     voc_dir = d2l.download_extract('voc2012', os.path.join(
         'VOCdevkit', 'VOC2012'))
-    num_workers = d2l.get_dataloader_workers()
+    num_workers = dataloader_workers
     train_iter = torch.utils.data.DataLoader(
         VOCSegDataset(True, crop_size, voc_dir), batch_size,
         shuffle=True, drop_last=True, num_workers=num_workers)
@@ -2155,11 +2155,11 @@ def batchify(data):
     return (d2l.reshape(d2l.tensor(centers), (-1, 1)), d2l.tensor(
         contexts_negatives), d2l.tensor(masks), d2l.tensor(labels))
 
-def load_data_ptb(batch_size, max_window_size, num_noise_words):
+def load_data_ptb(batch_size, max_window_size, num_noise_words, dataloader_workers=0):
     """Download the PTB dataset and then load it into memory.
 
     Defined in :numref:`subsec_word2vec-minibatch-loading`"""
-    num_workers = d2l.get_dataloader_workers()
+    num_workers = dataloader_workers
     sentences = read_ptb()
     vocab = d2l.Vocab(sentences, min_freq=10)
     subsampled, counter = subsample(sentences, vocab)
@@ -2496,11 +2496,11 @@ class _WikiTextDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.all_token_ids)
 
-def load_data_wiki(batch_size, max_len):
+def load_data_wiki(batch_size, max_len, dataloader_workers=0):
     """Load the WikiText-2 dataset.
 
     Defined in :numref:`subsec_prepare_mlm_data`"""
-    num_workers = d2l.get_dataloader_workers()
+    num_workers = dataloader_workers
     data_dir = d2l.download_extract('wikitext-2', 'wikitext-2')
     paragraphs = _read_wiki(data_dir)
     train_set = _WikiTextDataset(paragraphs, max_len)
@@ -2628,11 +2628,11 @@ class SNLIDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.premises)
 
-def load_data_snli(batch_size, num_steps=50):
+def load_data_snli(batch_size, num_steps=50, dataloader_workers=0):
     """Download the SNLI dataset and return data iterators and vocabulary.
 
     Defined in :numref:`sec_natural-language-inference-and-dataset`"""
-    num_workers = d2l.get_dataloader_workers()
+    num_workers = dataloader_workers
     data_dir = d2l.download_extract('SNLI')
     train_data = read_snli(data_dir, True)
     test_data = read_snli(data_dir, False)
@@ -2727,30 +2727,3 @@ reduce_sum = lambda x, *args, **kwargs: x.sum(*args, **kwargs)
 argmax = lambda x, *args, **kwargs: x.argmax(*args, **kwargs)
 astype = lambda x, *args, **kwargs: x.type(*args, **kwargs)
 transpose = lambda x, *args, **kwargs: x.t(*args, **kwargs)
-
-
-
-
-
-
-###################      Added     ##########################################
-def load_data_fashion_mnist_2(batch_size, resize=None, root_dir="../data"):
-    """Download the Fashion-MNIST dataset and then load it into memory.
-
-    Defined in :numref:`sec_fashion_mnist`"""
-    trans = [transforms.ToTensor()]
-    if resize:
-        trans.insert(0, transforms.Resize(resize))
-    trans = transforms.Compose(trans)
-    mnist_train = torchvision.datasets.FashionMNIST(
-        root=root_dir, train=True, transform=trans, download=True)
-    mnist_test = torchvision.datasets.FashionMNIST(
-        root=root_dir, train=False, transform=trans, download=True)
-    return (data.DataLoader(mnist_train, batch_size, shuffle=True,
-                            num_workers=get_dataloader_workers()),
-            data.DataLoader(mnist_test, batch_size, shuffle=False,
-                            num_workers=get_dataloader_workers()))
-
-
-
-
